@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { NewResourceModule } from './new-resource/new-resource.module';
+import { SentencesModule } from './sentences/sentences.module';
 
 @Module({
-  imports: [NewResourceModule],
+  imports: [SentencesModule],
   controllers: [AppController],
   providers: [AppService],
 })

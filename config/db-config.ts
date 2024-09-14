@@ -3,5 +3,5 @@ export class DbConfig {
     port: number = 5432; 
     database: string = "paulsdb";  
     user: string = "postgres"; 
-    pwd: string = "Chicca666"; 
+    pwd: string = process.env.POSTGRES_PWD; 
 }
