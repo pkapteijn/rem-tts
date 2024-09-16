@@ -14,8 +14,8 @@ export class SentencesController {
   }
 
   @Get()
-  findAll(@Res() response: Response) {
-    return this.sentencesService.findAll(response);
+  findAll() {
+    return this.sentencesService.findAll();
   }
 
   @Get(':id')

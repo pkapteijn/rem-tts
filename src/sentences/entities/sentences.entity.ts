@@ -1,17 +1,17 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-type LanguageType = "it"|"en"|"nl";
+import type {LanguageType} from '../sentences.types'; 
 
 @Entity()
 export class Sentences {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({unique: true})
   sentence: string;
 
   @Column()
-  language: string;  //LanguageType;
+  language: LanguageType;
 
   @Column() 
   times_used: number; 
