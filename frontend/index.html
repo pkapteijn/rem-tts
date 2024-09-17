@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paul's communicator</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid pt-3 mt-3 border">
+        <div class="row"  >
+            <div class="col-md-2">
+                    mylogo
+            </div>
+            <div class="col-md-10">
+                <h1 class="mb-4">Pronounce a phrase </h1>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputText">Enter phrase:</label>
+            <input type="text" class="form-control" id="inputText" placeholder="Type something...">
+        </div>
+        <button class="btn btn-primary" onclick="sendText()">Pronounce</button>
+    </div>
+
+    <div class="container-fluid pt-5 mt-5 border"></div>
+        <h2 class="mb-4">Available sentences</h2>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Sentence</th>
+                    <th>Language</th>
+                </tr>
+            </thead>
+            <tbody id="data-table">
+                <!-- Data will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function sendText() {
+            const text = document.getElementById('inputText').value;
+            fetch('http://localhost:3000/sentences', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ sentence: text, 
+                    language: "it"
+                 })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                getSentencesInTable()
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', getSentencesInTable()); 
+        function getSentencesInTable() {
+            // Replace 'your-api-url' with the actual API URL
+            fetch('http://localhost:3000/sentences')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('data-table');
+                    tableBody.innerHTML = ''; 
+                    data.forEach(item => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${item.id}</td>
+                            <td>${item.sentence}</td>
+                            <td>${item.language}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        };
+    </script>
+</body>
+</html>
