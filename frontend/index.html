@@ -4,33 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paul's communicator</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container-fluid pt-3 mt-3 border">
+    <div class="container-fluid bg-primary p-2 text-white border">
         <div class="row"  >
-            <div class="col-md-2">
-                    mylogo
+            <div class="col-md-1">
+                <svg width="50" height="50" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="25" cy="25" r="22.5" stroke="white" stroke-width="1.5" fill="none" />
+                    <path d="M12.5 25 Q18.75 12.5, 25 25 T37.5 25" stroke="orange" stroke-width="1.5" fill="none" />
+                    <circle cx="25" cy="25" r="2.5" fill="orange" />
+                  </svg>
+                
+        
             </div>
-            <div class="col-md-10">
-                <h1 class="mb-4">Pronounce a phrase </h1>
+            <div class="col-md-11">
+                <h1 class="">Paul's speech communicator </h1>
             </div>
         </div>
-        <div class="form-group">
-            <label for="inputText">Enter phrase:</label>
-            <input type="text" class="form-control" id="inputText" placeholder="Type something...">
+    </div>
+        
+    <div class="form-group">
+        <div class="container-fluid  p-3 border">
+            <label for="inputText"><h5>Enter phrase:</h5></label>
+            <div class="row"  >
+                <div class="col-md-9">
+                    <input type="text" class="form-control" id="inputText" placeholder="Type something...">
+                </div>
+                <div class="col-md-1">
+                    <select id="lang-select1" class="form-select form-select-md" >
+                        <option selected="it">IT</option>
+                        <option value="en">EN</option>
+                        <option value="nl">NL</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-warning" onclick="sendText()">Pronounce</button>
+                </div>
+            </div>
         </div>
-        <button class="btn btn-primary" onclick="sendText()">Pronounce</button>
     </div>
 
-    <div class="container-fluid pt-5 mt-5 border"></div>
-        <h2 class="mb-4">Available sentences</h2>
-        <table class="table table-hover">
-            <thead>
+    <div class="container-fluid  p-2 text-white border"></div>
+        <h2 class="bg-info pl-2 text-white">Available sentences</h2>
+        <table class="table   table-sm  table-hover">
+            <thead class="thead-info">
                 <tr>
                     <th>ID</th>
                     <th>Sentence</th>
                     <th>Language</th>
+                    <th>Delete</th>
                 </tr>
             </thead>
             <tbody id="data-table">
@@ -42,13 +65,15 @@
     <script>
         function sendText() {
             const text = document.getElementById('inputText').value;
+            const lang = document.querySelector('#lang-select1').value// || "it";
+            console.log("lang:  " + lang)  
             fetch('http://localhost:3000/sentences', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ sentence: text, 
-                    language: "it"
+                    language: lang
                  })
             })
             .then(response => response.json())
@@ -69,16 +94,45 @@
                     tableBody.innerHTML = ''; 
                     data.forEach(item => {
                         const row = document.createElement('tr');
+                        let phraseId = 'phrase-' + item.id;
+                        let delId = 'del' + item.id;  
                         row.innerHTML = `
                             <td>${item.id}</td>
-                            <td>${item.sentence}</td>
+                            <td><div id="${phraseId}"><a href="#">${item.sentence}</a></div></td>
                             <td>${item.language}</td>
+                            <td><div id="${delId}"><button class="btn btn-secondary btn-sm" onclick="deleteSentence()">Delete</button></div></td>
                         `;
                         tableBody.appendChild(row);
+                        document.getElementById(phraseId).removeEventListener('click', postTTS); 
+                        document.getElementById(delId).removeEventListener('click', deleteSentence); 
+                        document.getElementById(phraseId).addEventListener('click', postTTS); 
+                        document.getElementById(delId).addEventListener('click', deleteSentence); 
+                        document.getElementById(phraseId).phrase = item; 
+                        document.getElementById(delId).phrase = item; 
+                        
                     });
                 })
                 .catch(error => console.error('Error fetching data:', error));
         };
+
+        function postTTS(event) {
+            const phrase = event.currentTarget.phrase; 
+            console.log(phrase)
+        };
+        
+        function deleteSentence(event) {
+            const itemId = event.currentTarget.phrase.id; 
+            fetch('http://localhost:3000/sentences/' + itemId, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(() => {
+                getSentencesInTable()
+            })
+            .catch(error => console.error('Error:', error));
+        }
     </script>
 </body>
 </html>
