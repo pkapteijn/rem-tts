@@ -11,7 +11,8 @@ import { join } from 'path';
       rootPath: join(__dirname, '..', '..',  'frontend'),
       serveRoot: '/frontend/'
     }),
-    SentencesModule],
+    SentencesModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

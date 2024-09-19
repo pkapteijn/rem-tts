@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { TtsModule } from 'src/tts/tts.module';
 import { SentencesService } from './sentences.service';
 import { SentencesController } from './sentences.controller';
 import { Sentences } from './entities/sentences.entity';
@@ -20,6 +21,7 @@ const dbconfig = new DbConfig();
       synchronize: false,
     }),
     TypeOrmModule.forFeature([Sentences]),
+    TtsModule
   ],
   controllers: [SentencesController],
   providers: [SentencesService],
