@@ -12,7 +12,7 @@ const dbconfig = new DbConfig();
 @Module({
   imports: [    
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '..',  'frontend'),
+      rootPath: join(__dirname, '..', 'frontend'),
       serveRoot: '/frontend/'
     }),
     SentencesModule,
