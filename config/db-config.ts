@@ -1,4 +1,5 @@
 export class DbConfig {
+    dbtype: "postgres"; 
     host: string = "localhost";  
     port: number = 5432; 
     database: string = "paulsdb";  

@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paul's communicator</title>
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
     <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <script src="./script/frontend.js"></script>
 </head>
 <body>
     <div class="container-fluid bg-primary p-2 text-white border">
@@ -29,7 +31,7 @@
             <label for="inputText"><h5>Enter phrase:</h5></label>
             <div class="row"  >
                 <div class="col-md-9">
-                    <input type="text" class="form-control" id="inputText" placeholder="Type something...">
+                    <input type="text" class="form-control" id="inputText" placeholder="Type something..." autofocus>
                 </div>
                 <div class="col-md-1">
                     <select id="lang-select1" class="form-select form-select-md" >
@@ -39,7 +41,8 @@
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <button class="btn btn-warning" onclick="sendText()">Pronounce</button>
+                    <button class="btn btn-warning" onclick="postTTS()" autofocus>Speak</button>
+                    <button class="btn btn-info" onclick="saveSentence()">Saves</button>
                 </div>
             </div>
         </div>
@@ -61,78 +64,5 @@
             </tbody>
         </table>
     </div>
-
-    <script>
-        function sendText() {
-            const text = document.getElementById('inputText').value;
-            const lang = document.querySelector('#lang-select1').value// || "it";
-            console.log("lang:  " + lang)  
-            fetch('http://localhost:3000/sentences', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ sentence: text, 
-                    language: lang
-                 })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-                getSentencesInTable()
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-        document.addEventListener('DOMContentLoaded', getSentencesInTable()); 
-        function getSentencesInTable() {
-            // Replace 'your-api-url' with the actual API URL
-            fetch('http://localhost:3000/sentences')
-                .then(response => response.json())
-                .then(data => {
-                    const tableBody = document.getElementById('data-table');
-                    tableBody.innerHTML = ''; 
-                    data.forEach(item => {
-                        const row = document.createElement('tr');
-                        let phraseId = 'phrase-' + item.id;
-                        let delId = 'del' + item.id;  
-                        row.innerHTML = `
-                            <td>${item.id}</td>
-                            <td><div id="${phraseId}"><a href="#">${item.sentence}</a></div></td>
-                            <td>${item.language}</td>
-                            <td><div id="${delId}"><button class="btn btn-secondary btn-sm" onclick="deleteSentence()">Delete</button></div></td>
-                        `;
-                        tableBody.appendChild(row);
-                        document.getElementById(phraseId).removeEventListener('click', postTTS); 
-                        document.getElementById(delId).removeEventListener('click', deleteSentence); 
-                        document.getElementById(phraseId).addEventListener('click', postTTS); 
-                        document.getElementById(delId).addEventListener('click', deleteSentence); 
-                        document.getElementById(phraseId).phrase = item; 
-                        document.getElementById(delId).phrase = item; 
-                        
-                    });
-                })
-                .catch(error => console.error('Error fetching data:', error));
-        };
-
-        function postTTS(event) {
-            const phrase = event.currentTarget.phrase; 
-            console.log(phrase)
-        };
-        
-        function deleteSentence(event) {
-            const itemId = event.currentTarget.phrase.id; 
-            fetch('http://localhost:3000/sentences/' + itemId, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(() => {
-                getSentencesInTable()
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    </script>
 </body>
 </html>
