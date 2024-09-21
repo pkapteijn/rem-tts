@@ -28,13 +28,13 @@ export class SentencesService {
   }
 
   async findAll(): Promise<Sentences[]> {
-    const queryResult =
-      await this.SentencesRepository
-        .createQueryBuilder('sentences')
-        .orderBy("sentences.times_used", "DESC")
-        .getMany();
+    const queryResult = await this.SentencesRepository.createQueryBuilder(
+      'sentences',
+    )
+      .orderBy('sentences.times_used', 'DESC')
+      .getMany();
 
-        return queryResult;
+    return queryResult;
   }
 
   async findOne(id: number): Promise<Sentences> {
@@ -44,7 +44,7 @@ export class SentencesService {
       .where('sentences.id = :id', { id: id })
       .getOneOrFail();
 
-      return queryResult;
+    return queryResult;
   }
 
   async update(
@@ -71,7 +71,7 @@ export class SentencesService {
       .where('sentences.id = :id', { id: id })
       .getOneOrFail();
 
-      return queryResult;
+    return queryResult;
   }
 
   async remove(id: number): Promise<HttpException> {
@@ -83,7 +83,7 @@ export class SentencesService {
       .where('sentences.id = :id', { id: id })
       .execute();
 
-      throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+    throw new HttpException('No Content', HttpStatus.NO_CONTENT);
     //return response.status(HttpStatus.NO_CONTENT).send();
   }
 }

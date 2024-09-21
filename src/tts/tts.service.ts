@@ -1,9 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, StreamableFile } from '@nestjs/common';
 import { CreateSentencesDto } from '../sentences/dto/create-sentences.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import {
+  Engine,
+  PollyClient,
+  SynthesizeSpeechCommand,
+  VoiceId,
+} from '@aws-sdk/client-polly';
 import { Sentences } from '../sentences/entities/sentences.entity';
 import { LanguageType } from 'src/sentences/sentences.types';
+import { Readable } from 'stream';
+
+const voiceType: Engine = 'neural';
+const voices = {
+  standard: {
+    it: 'Giorgio',
+    en: 'Brian',
+    nl: 'Ruben',
+  },
+  neural: {
+    it: 'Adriano',
+    en: 'Joey',
+    nl: 'Laura',
+  },
+};
+const polly = new PollyClient({});
 
 @Injectable()
 export class TtsService {
@@ -12,52 +34,60 @@ export class TtsService {
     private SentencesRepository: Repository<Sentences>,
   ) {}
 
-  async create(createTtDto: CreateSentencesDto): Promise<CreateSentencesDto> {
-    console.log("Start TTS");
-    await this.speakSentence(createTtDto);  
-    const found = await this.existsSentence(createTtDto); 
-    console.log("Foundsentence: " + found); 
-    let updated: boolean = false; 
-    if (found) {
-      updated = await this.updateTimesUsed(createTtDto); 
-    }
-    else {
-      updated = await this.insertNewSentence(createTtDto); 
-    }
-    console.log("Updated: " + updated); 
-    return createTtDto;
-  }
+  async speak(
+    sentence: string,
+    language: LanguageType,
+  ): Promise<StreamableFile> {
+    const createTtDto: CreateSentencesDto = new CreateSentencesDto();
+    createTtDto.sentence = sentence;
+    createTtDto.language = language;
 
-  async speakSentence(sentence: CreateSentencesDto): Promise<any> {
-    console.log("Placeholder TTS action: " + sentence.sentence); 
-    return; 
+    const found = await this.existsSentence(createTtDto);
+
+    let updated: boolean = false;
+    if (found) {
+      updated = await this.updateTimesUsed(createTtDto);
+    } else {
+      updated = await this.insertNewSentence(createTtDto);
+    }
+    const synthesizeSpeechCommand = new SynthesizeSpeechCommand({
+      Text: sentence,
+      VoiceId: voices[voiceType][language] as VoiceId,
+      OutputFormat: 'mp3',
+      Engine: voiceType,
+    });
+    const { AudioStream } = await polly.send(synthesizeSpeechCommand);
+
+    return new StreamableFile(AudioStream as Readable);
   }
 
   async existsSentence(sentence: CreateSentencesDto): Promise<boolean> {
-    const queryResult = await this.SentencesRepository
-      .createQueryBuilder('sentences')
+    const queryResult = await this.SentencesRepository.createQueryBuilder(
+      'sentences',
+    )
       .where('sentences.sentence = :sen', { sen: sentence.sentence })
       .andWhere('sentences.language = :lan', { lan: sentence.language })
       .getOne();
-    return queryResult ? true : false; 
-    }  
-
-  async updateTimesUsed(sentence: CreateSentencesDto): Promise<boolean> {
-    const queryResult = await this.SentencesRepository
-      .createQueryBuilder('sentences')
-      .update(Sentences)
-      .set({
-        times_used: () => "times_used + 1",
-        last_used: new Date()
-      })
-      .where("sentence = :sen", { sen: sentence.sentence })
-      .andWhere("language = :lan", { lan: sentence.language})
-      .execute(); 
-      
-    return queryResult ? true : false; 
+    return queryResult ? true : false;
   }
 
-async insertNewSentence(sentence: CreateSentencesDto): Promise<boolean> {
+  async updateTimesUsed(sentence: CreateSentencesDto): Promise<boolean> {
+    const queryResult = await this.SentencesRepository.createQueryBuilder(
+      'sentences',
+    )
+      .update(Sentences)
+      .set({
+        times_used: () => 'times_used + 1',
+        last_used: new Date(),
+      })
+      .where('sentence = :sen', { sen: sentence.sentence })
+      .andWhere('language = :lan', { lan: sentence.language })
+      .execute();
+
+    return queryResult ? true : false;
+  }
+
+  async insertNewSentence(sentence: CreateSentencesDto): Promise<boolean> {
     const data: Partial<Sentences> = new Sentences();
 
     data.sentence = sentence.sentence;
@@ -67,7 +97,6 @@ async insertNewSentence(sentence: CreateSentencesDto): Promise<boolean> {
 
     const entity = await this.SentencesRepository.create(data);
 
-    return await this.SentencesRepository.save(entity) ?  true : false;
+    return (await this.SentencesRepository.save(entity)) ? true : false;
   }
-
 }

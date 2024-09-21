@@ -26,10 +26,10 @@ export class SentencesController {
     return this.sentencesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: string) {
-    return this.sentencesService.findOne(+id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id', ParseIntPipe) id: string) {
+  //   return this.sentencesService.findOne(+id);
+  // }
 
   @Patch(':id')
   update(

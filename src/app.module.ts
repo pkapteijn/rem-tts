@@ -10,10 +10,10 @@ import { join } from 'path';
 const dbconfig = new DbConfig();
 
 @Module({
-  imports: [    
+  imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'frontend'),
-      serveRoot: '/frontend/'
+      serveRoot: '/frontend/',
     }),
     SentencesModule,
     TypeOrmModule.forRoot({

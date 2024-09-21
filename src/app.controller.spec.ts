@@ -16,7 +16,7 @@ describe('AppController', () => {
 
   describe('root', () => {
     it('should return  a proper heartbeat object', () => {
-      const hb = appController.getHeartbeat(); 
+      const hb = appController.getHeartbeat();
       expect(hb).toHaveProperty('timestamp');
       expect(hb).toHaveProperty('freemem');
       expect(hb).toHaveProperty('loadavg');

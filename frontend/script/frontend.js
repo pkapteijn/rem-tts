@@ -38,41 +38,44 @@ function getSentencesInTable() {
                     <td><div id="${delId}"><button class="btn btn-secondary btn-sm" onclick="deleteSentence()">Delete</button></div></td>
                 `;
                 tableBody.appendChild(row);
-                document.getElementById(phraseId).removeEventListener('click', postTTS); 
-                document.getElementById(delId).removeEventListener('click', deleteSentence); 
-                document.getElementById(phraseId).addEventListener('click', postTTS); 
-                document.getElementById(delId).addEventListener('click', deleteSentence); 
                 document.getElementById(phraseId).phrase = item; 
-                document.getElementById(delId).phrase = item; 
+                document.getElementById(delId).phrase = item;
+                document.getElementById(phraseId).removeEventListener('click', speak); 
+                document.getElementById(delId).removeEventListener('click', deleteSentence); 
+                document.getElementById(phraseId).addEventListener('click', speak); 
+                document.getElementById(delId).addEventListener('click', deleteSentence); 
+ 
                 
             });
         })
         .catch(error => console.error('Error fetching data:', error));
 };
 
-function postTTS() {
-    const text = document.getElementById('inputText').value;
-    const lang = document.querySelector('#lang-select1').value.toLowerCase(); // || "it";
-    console.log("lang:  " + lang)  
-    fetch('http://localhost:3000/sentences/tts', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ sentence: text, 
-            language: lang
-         })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data)
-        getSentencesInTable()
-    })
-    .catch(error => console.error('Error:', error));
-
+function speak(event) {
+    //const item = (event && event.hasOwnProperty('currentTarget') && event.currentTarget.hasOwnProperty('phrase')) ? 
+    //    event.currentTarget.phrase :  undefined ; 
+    //console.log("item", event.currentTarget.phrase)
+    const text = (event && event.currentTarget) ? event.currentTarget.phrase.sentence : document.getElementById('inputText').value;
+    const lang = (event && event.currentTarget) ? event.currentTarget.phrase.language : document.querySelector('#lang-select1').value.toLowerCase(); // || "it";
+    const player = document.getElementById('player'); 
+    const input = document.getElementById('inputText'); 
+    console.log("lang:  " + lang)
+    const url = 'http://localhost:3000/sentences/tts' +
+        '?sentence=' +
+        encodeURIComponent(text) +
+        '&language=' +
+        encodeURIComponent(lang); 
+    player.src = url; 
+    player.play(); 
+        
+    // update the sentences table
+    getSentencesInTable(); 
+    input.value = ""; 
+    input.focus(); 
 };
 
 function deleteSentence(event) {
+    console.log("item", event.currentTarget.phrase)
     const itemId = event.currentTarget.phrase.id; 
     fetch('http://localhost:3000/sentences/' + itemId, {
         method: 'DELETE',
