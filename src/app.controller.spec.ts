@@ -15,8 +15,14 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHeartbeat()).toBe('Hello World!');
+    it('should return  a proper heartbeat object', () => {
+      const hb = appController.getHeartbeat();
+      expect(hb).toHaveProperty('timestamp');
+      expect(hb).toHaveProperty('freemem');
+      expect(hb).toHaveProperty('loadavg');
+      expect(hb).toHaveProperty('hostname');
+      expect(hb).toHaveProperty('platform');
+      expect(hb).toHaveProperty('version');
     });
   });
 });

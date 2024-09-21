@@ -1,12 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateSentencesDto } from './dto/create-sentences.dto';
 import { UpdateSentencesDto } from './dto/update-sentences.dto';
-import { Response } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
 import { Sentences } from './entities/sentences.entity';
 
-import type { ResponseType, LanguageType } from './sentences.types';
+import type { LanguageType } from './sentences.types';
 
 @Injectable()
 export class SentencesService {
@@ -22,7 +21,6 @@ export class SentencesService {
     data.language = (createSentencesDto.language as LanguageType) || 'it';
     data.times_used = 1;
     data.last_used = new Date();
-    console.log(data);
 
     const entity = this.SentencesRepository.create(data);
 
@@ -30,9 +28,12 @@ export class SentencesService {
   }
 
   async findAll(): Promise<Sentences[]> {
-    const queryResult =
-      await this.SentencesRepository.createQueryBuilder('sentences').getMany();
-    console.log(queryResult);
+    const queryResult = await this.SentencesRepository.createQueryBuilder(
+      'sentences',
+    )
+      .orderBy('sentences.times_used', 'DESC')
+      .getMany();
+
     return queryResult;
   }
 
@@ -42,7 +43,7 @@ export class SentencesService {
     )
       .where('sentences.id = :id', { id: id })
       .getOneOrFail();
-    console.log(queryResult);
+
     return queryResult;
   }
 
@@ -69,7 +70,7 @@ export class SentencesService {
     )
       .where('sentences.id = :id', { id: id })
       .getOneOrFail();
-    console.log(queryResult);
+
     return queryResult;
   }
 
@@ -81,7 +82,7 @@ export class SentencesService {
       .from(Sentences)
       .where('sentences.id = :id', { id: id })
       .execute();
-    console.log(queryResult);
+
     throw new HttpException('No Content', HttpStatus.NO_CONTENT);
     //return response.status(HttpStatus.NO_CONTENT).send();
   }

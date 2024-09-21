@@ -5,15 +5,12 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
-  Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { QueryFailedError } from 'typeorm';
 import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
 import { CannotCreateEntityIdMapError } from 'typeorm/error/CannotCreateEntityIdMapError';
-import { ValidationError } from 'class-validator';
 import { GlobalResponseError } from './global.response.error';
-import { parse } from 'path';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {

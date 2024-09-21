@@ -1,26 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { freemem, loadavg, hostname, platform, version } from 'os';
-
-type Heartbeat = {
-  timestamp: Date;
-  freemem: number;
-  loadavg: number[];
-  hostname: string;
-  platform: string;
-  version: string;
-};
+import { Heartbeat } from './app.heartbeat';
 
 @Injectable()
 export class AppService {
   getHeartbeat(): Heartbeat {
-    const heartbeat: Heartbeat = {
-      timestamp: new Date(),
-      freemem: freemem(),
-      loadavg: loadavg(),
-      hostname: hostname(),
-      platform: platform(),
-      version: version(),
-    };
-    return heartbeat;
+    const heartbeat = new Heartbeat();
+    return heartbeat.get();
   }
 }
