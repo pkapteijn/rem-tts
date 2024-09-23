@@ -6,7 +6,10 @@
     <title>Paul's communicator</title>
     <link rel="icon" type="image/x-icon" href="./favicon.ico">
     <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/custom.css" rel="stylesheet">
     <script src="./script/frontend.js"></script>
+    <script src="./script/cards.js" defer></script>
+
 </head>
 <body>
     <div class="container-fluid bg-primary p-2 text-white border">
@@ -21,49 +24,51 @@
         
             </div>
             <div class="col-md-11">
-                <h1 class="">Paul's speech communicator </h1>
+                <h1 class="">Paul's REM text-2-speech </h1>
             </div>
-        </div>
-    </div>
-        
-    <div class="form-group">
-        <div class="container-fluid  p-3 border">
-            <label for="inputText"><h5>Enter phrase:</h5></label>
-            <div class="row"  >
-                <div class="col-md-9">
-                    <input type="text" class="form-control" id="inputText" placeholder="Type something..." autofocus>
-                </div>
-                <div class="col-md-1">
-                    <select id="lang-select1" class="form-select form-select-md" >
-                        <option selected="it">IT</option>
-                        <option value="en">EN</option>
-                        <option value="nl">NL</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button class="btn btn-warning" onclick="speak()" autofocus>Speak</button>
-                    <button class="btn btn-info" onclick="saveSentence()">Save</button>
-                </div>
-            </div>
-            <audio id="player"></audio>
         </div>
     </div>
 
-    <div class="container-fluid  p-2 text-white border"></div>
-        <h2 class="bg-info pl-2 text-white">Available sentences</h2>
-        <table class="table   table-sm  table-hover">
-            <thead class="thead-info">
-                <tr>
-                    <th>ID</th>
-                    <th>Sentence</th>
-                    <th>Language</th>
-                    <th>Delete</th>
-                </tr>
-            </thead>
-            <tbody id="data-table">
-                <!-- Data will be inserted here -->
-            </tbody>
-        </table>
-    </div>
+
+
+<form>
+        <div class="container-fluid  p-3 border">
+            <div class="row"  >
+            <label for="inputText"><h5>Enter phrase:</h5></label>
+
+        <div class="input-group mb-3">
+            <div class="col-md-8">
+
+        <input type="text" class="form-control" id="inputText" autofocus placeholder="Type your text to pronounce..." aria-label="Text to pronounce" aria-describedby="button-speak">
+            </div>
+            <div class="col-md-2">
+            <select id="lang-select1" class="form-select form-select-md" >
+                <option selected="it">IT</option>
+                <option value="en">EN</option>
+                <option value="nl">NL</option>
+            </select>
+            </div>
+            <div class="col-md-1">
+            <button class="btn btn-warning"  id="button-speak" autofocus onclick="speak()">Speak</button>
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-info" onclick="saveSentence()">Save</button>
+            </div>
+        </div>
+        </div>
+        <audio id="player"></audio>
+
+        </div>
+</form>
+
+<div id="audio-player">
+</div>
+
+
+<div class="container-fluid  p-2 text-white border" id="card-container-most-used">
+    <h2 class="bg-info pl-2 text-white">Most used sentences</h2>
+    
+</div>
+
 </body>
 </html>
