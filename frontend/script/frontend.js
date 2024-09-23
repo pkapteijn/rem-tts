@@ -45,6 +45,7 @@ function speak(event) {
 
 function deleteSentence(event) {
     console.log("item", event.currentTarget.phrase)
+    event.stopPropagation(); 
     const itemId = event.currentTarget.phrase.id; 
     fetch('http://localhost:3000/sentences/' + itemId, {
         method: 'DELETE',
