@@ -54,7 +54,7 @@ function getNewCard(sentenceItem,  index) {
     cardBody.setAttribute("class", "card-body"); 
 
     const badge = document.createElement("span"); 
-    badge.setAttribute("class", "badge rounded-pill bg-danger badge-pill-close"); 
+    badge.setAttribute("class", "badge rounded-pill bg-warning badge-pill-close"); 
     badge.setAttribute("id", delIndex); 
     badge.innerHTML = '×'; 
     badge.phrase = sentenceItem;  // object for eventlistener 
@@ -99,19 +99,4 @@ function addEventListeners(length) {
 
     }
 }
-
-
-document.addEventListener('DOMContentLoaded', getMostUsedSentences());
-function getMostUsedSentences() {
-    fetch('http://localhost:3000/sentences')
-        .then(response => response.json())
-        .then(data => {
-            removeCardRows(data.length, 6, 'card-container-most-used'); 
-            addCardRows(data.length, 6, 'card-container-most-used'); 
-
-            addCardsToRows(data, 6, 'card-row-most-'); 
-            addEventListeners(data.length); 
-        })
-        .catch(error => console.error('Error fetching data:', error));
-};
 

@@ -1,4 +1,4 @@
-import { Injectable, StreamableFile } from '@nestjs/common';
+import { Injectable, StreamableFile, Logger } from '@nestjs/common';
 import { CreateSentencesDto } from '../sentences/dto/create-sentences.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -56,8 +56,10 @@ export class TtsService {
       OutputFormat: 'mp3',
       Engine: voiceType,
     });
+    Logger.log("Sending request to Polly: " + sentence, 'TTS'); 
+    Logger.log("Aws keys: " + process.env.AWS_ACCESS_KEY_ID, 'TTS')
     const { AudioStream } = await polly.send(synthesizeSpeechCommand);
-
+    Logger.log("Returning audio stream", 'TTS'); 
     return new StreamableFile(AudioStream as Readable);
   }
 

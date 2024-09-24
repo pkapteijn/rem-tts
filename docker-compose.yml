@@ -1,0 +1,26 @@
+services:
+  postgresdb:
+    container_name: 'pauls-postgres'
+    image: postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD=$POSTGRES_PWD
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+  rem-tts:
+    container_name: 'rem-tts'
+    image: rem-tts
+    depends_on:
+      - postgresdb
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PWD=$POSTGRES_PWD
+      - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+      - AWS_REGION=eu-central-1
+    ports:
+      - 3000:3000
+volumes:
+  postgres-data:

@@ -19,7 +19,21 @@ function saveSentence() {
     .catch(error => console.error('Error:', error));
 }
 
-document.addEventListener('DOMContentLoaded', getMostUsedSentences()); 
+document.addEventListener('DOMContentLoaded', getMostUsedSentences());
+
+function getMostUsedSentences() {
+    fetch('http://localhost:3000/sentences')
+        .then(response => response.json())
+        .then(data => {
+            removeCardRows(data.length, 6, 'card-container-most-used'); 
+            addCardRows(data.length, 6, 'card-container-most-used'); 
+
+            addCardsToRows(data, 6, 'card-row-most-'); 
+            addEventListeners(data.length); 
+        })
+        .catch(error => console.error('Error fetching data:', error));
+};
+
 
 function speak(event) {
     // if event present, triggered from existing sentences,  else from input button

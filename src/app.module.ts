@@ -24,7 +24,7 @@ const dbconfig = new DbConfig();
       password: dbconfig.pwd,
       database: dbconfig.database,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: false,
+      synchronize: true,
     }),
   ],
   controllers: [AppController],
