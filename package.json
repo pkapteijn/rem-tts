@@ -1,12 +1,13 @@
 {
-  "name": "test-project",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "name": "rem-test",
+  "version": "0.2.0",
+  "description": "Text-2-speech powered by AWS Polly",
+  "author": "Paul Kapteijn",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
+    "build:docker": "./tooling/build.sh", 
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -17,7 +18,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json", 
+    "deploy:docker-compose": "./tooling/deploy.sh"
   },
   "dependencies": {
     "@aws-sdk/client-polly": "^3.654.0",
