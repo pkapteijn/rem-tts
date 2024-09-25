@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,6 +9,7 @@ import { join } from 'path';
 
 const dbconfig = new DbConfig();
 
+Logger.log("DB config used: " + dbconfig.log(), 'AppModule'); 
 @Module({
   imports: [
     ServeStaticModule.forRoot({

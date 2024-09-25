@@ -33,7 +33,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       case QueryFailedError: // this is a TypeOrm error
         message = (exception as QueryFailedError).message;
 
-        console.log(message);
         if (message.includes('unique constraint')) {
           status = HttpStatus.BAD_REQUEST;
         } else {
@@ -62,6 +61,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         status = HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
+    Logger.log("Returning exception response: " + 
+        status + ", " + 
+        message + ", " + 
+        code, 'Filter'); 
     response
       .status(status)
       .json(GlobalResponseError(status, message, code, request));

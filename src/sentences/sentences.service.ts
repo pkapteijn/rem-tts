@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CreateSentencesDto } from './dto/create-sentences.dto';
 import { UpdateSentencesDto } from './dto/update-sentences.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,12 +22,16 @@ export class SentencesService {
     data.times_used = 1;
     data.last_used = new Date();
 
+    Logger.log('Creating: ' + JSON.stringify(data), 'Sentences');
+
     const entity = this.SentencesRepository.create(data);
 
     return await this.SentencesRepository.save(entity);
   }
 
   async findAll(): Promise<Sentences[]> {
+    Logger.log('Querying all', 'Sentences');
+
     const queryResult = await this.SentencesRepository.createQueryBuilder(
       'sentences',
     )
@@ -38,6 +42,8 @@ export class SentencesService {
   }
 
   async findOne(id: number): Promise<Sentences> {
+    Logger.log('Querying one: ' + id, 'Sentences');
+
     const queryResult = await this.SentencesRepository.createQueryBuilder(
       'sentences',
     )
@@ -55,7 +61,7 @@ export class SentencesService {
     for (const key in updateSentencesDto) {
       data[key] = updateSentencesDto[key];
     }
-    console.log(new Date().toISOString() + ': ' + JSON.stringify(data));
+    Logger.log('Updating: ' + JSON.stringify(data), 'Sentences');
 
     const result: UpdateResult =
       await this.SentencesRepository.createQueryBuilder('sentences')
@@ -75,6 +81,8 @@ export class SentencesService {
   }
 
   async remove(id: number): Promise<HttpException> {
+    Logger.log('Deleting: ' + id, 'Sentences');
+
     const queryResult = await this.SentencesRepository.createQueryBuilder(
       'sentences',
     )
@@ -84,6 +92,5 @@ export class SentencesService {
       .execute();
 
     throw new HttpException('No Content', HttpStatus.NO_CONTENT);
-    //return response.status(HttpStatus.NO_CONTENT).send();
   }
 }

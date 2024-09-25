@@ -11,20 +11,13 @@ import {
 import { Sentences } from '../sentences/entities/sentences.entity';
 import { LanguageType } from 'src/sentences/sentences.types';
 import { Readable } from 'stream';
+import { PollyConfig } from 'src/config/polly-config';
 
-const voiceType: Engine = 'neural';
-const voices = {
-  standard: {
-    it: 'Giorgio',
-    en: 'Brian',
-    nl: 'Ruben',
-  },
-  neural: {
-    it: 'Adriano',
-    en: 'Joey',
-    nl: 'Laura',
-  },
-};
+const pollyConfig = new PollyConfig(); 
+Logger.log("Polly config: " + pollyConfig.log(), 'TTS')
+const voiceType: Engine = pollyConfig.voiceType;
+const voices = pollyConfig.voices; 
+
 const polly = new PollyClient({});
 
 @Injectable()
@@ -34,10 +27,7 @@ export class TtsService {
     private SentencesRepository: Repository<Sentences>,
   ) {}
 
-  async speak(
-    sentence: string,
-    language: LanguageType,
-  ): Promise<StreamableFile> {
+  async speak(sentence: string, language: LanguageType ): Promise<StreamableFile> {
     const createTtDto: CreateSentencesDto = new CreateSentencesDto();
     createTtDto.sentence = sentence;
     createTtDto.language = language;
@@ -46,20 +36,24 @@ export class TtsService {
 
     let updated: boolean = false;
     if (found) {
+      Logger.log("Sentence already exists, update times_used and last_used", 'TTS'); 
       updated = await this.updateTimesUsed(createTtDto);
     } else {
+      Logger.log("Inserting new sentence", 'TTS'); 
       updated = await this.insertNewSentence(createTtDto);
     }
+
     const synthesizeSpeechCommand = new SynthesizeSpeechCommand({
       Text: sentence,
       VoiceId: voices[voiceType][language] as VoiceId,
-      OutputFormat: 'mp3',
+      OutputFormat: pollyConfig.outputFormat,
       Engine: voiceType,
     });
+
     Logger.log("Sending request to Polly: " + sentence, 'TTS'); 
-    Logger.log("Aws keys: " + process.env.AWS_ACCESS_KEY_ID, 'TTS')
     const { AudioStream } = await polly.send(synthesizeSpeechCommand);
     Logger.log("Returning audio stream", 'TTS'); 
+
     return new StreamableFile(AudioStream as Readable);
   }
 

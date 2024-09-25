@@ -17,9 +17,13 @@ services:
     restart: unless-stopped
     environment:
       - POSTGRES_PWD=$POSTGRES_PWD
+      - POSTGRES_HOST=pauls-postgres
+      - POSTGRES_PORT=$POSTGRES_PORT
+      - POSTGRES_DB=$POSTGRES_DB
+      - POSTGRES_USER=$POSTGRES_USER
       - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-      - AWS_REGION=eu-central-1
+      - AWS_REGION=$AWS_REGION
     ports:
       - 3000:3000
 volumes:
