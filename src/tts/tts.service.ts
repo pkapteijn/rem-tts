@@ -9,9 +9,9 @@ import {
   VoiceId,
 } from '@aws-sdk/client-polly';
 import { Sentences } from '../sentences/entities/sentences.entity';
-import { LanguageType } from 'src/sentences/sentences.types';
+import { LanguageType } from '../sentences/sentences.types';
 import { Readable } from 'stream';
-import { PollyConfig } from 'src/config/polly-config';
+import { PollyConfig } from '../config/polly-config';
 
 const pollyConfig = new PollyConfig(); 
 Logger.log("Polly config: " + pollyConfig.log(), 'TTS')

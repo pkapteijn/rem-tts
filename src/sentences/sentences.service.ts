@@ -12,7 +12,7 @@ export class SentencesService {
   constructor(
     @InjectRepository(Sentences)
     private SentencesRepository: Repository<Sentences>,
-  ) {}
+  ) { }
 
   async create(createSentencesDto: CreateSentencesDto): Promise<Sentences> {
     const data: Partial<Sentences> = new Sentences();
@@ -70,7 +70,7 @@ export class SentencesService {
         .where('sentences.id = :id', { id: id })
         .execute();
 
-    // get the updated object to return
+    //get the updated object to return
     const queryResult = await this.SentencesRepository.createQueryBuilder(
       'sentences',
     )
