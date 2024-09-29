@@ -15,7 +15,7 @@ describe('AppController', () => {
     appController = app.get<AppController>(AppController);
   });
 
-  describe('root', () => {
+  describe('AppController', () => {
 
     it('should return  a proper heartbeat object', () => {
       const hb = appController.getHeartbeat();

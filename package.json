@@ -1,5 +1,5 @@
 {
-  "name": "rem-test",
+  "name": "rem-tts",
   "version": "0.2.0",
   "description": "Text-2-speech powered by AWS Polly",
   "author": "Paul Kapteijn",
