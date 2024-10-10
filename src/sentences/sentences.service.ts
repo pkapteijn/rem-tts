@@ -22,7 +22,7 @@ export class SentencesService {
     data.times_used = 1;
     data.last_used = new Date();
 
-    Logger.log('Creating: ' + JSON.stringify(data), 'Sentences');
+    Logger.log('Creating: ' + JSON.stringify(data), this.constructor.name);
 
     const entity = this.SentencesRepository.create(data);
 
@@ -30,7 +30,7 @@ export class SentencesService {
   }
 
   async findAll(): Promise<Sentences[]> {
-    Logger.log('Querying all', 'Sentences');
+    Logger.log('Querying all', this.constructor.name);
 
     const queryResult = await this.SentencesRepository.createQueryBuilder(
       'sentences',
@@ -61,7 +61,7 @@ export class SentencesService {
     for (const key in updateSentencesDto) {
       data[key] = updateSentencesDto[key];
     }
-    Logger.log('Updating: ' + JSON.stringify(data), 'Sentences');
+    Logger.log('Updating: ' + JSON.stringify(data), this.constructor.name);
 
     const result: UpdateResult =
       await this.SentencesRepository.createQueryBuilder('sentences')
@@ -81,7 +81,7 @@ export class SentencesService {
   }
 
   async remove(id: number): Promise<HttpException> {
-    Logger.log('Deleting: ' + id, 'Sentences');
+    Logger.log('Deleting: ' + id, this.constructor.name);
 
     const queryResult = await this.SentencesRepository.createQueryBuilder(
       'sentences',

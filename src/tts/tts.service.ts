@@ -36,10 +36,10 @@ export class TtsService {
 
     let updated: boolean = false;
     if (found) {
-      Logger.log("Sentence already exists, update times_used and last_used", 'TTS'); 
+      Logger.log("Sentence already exists, update times_used and last_used", this.constructor.name); 
       updated = await this.updateTimesUsed(createTtDto);
     } else {
-      Logger.log("Inserting new sentence", 'TTS'); 
+      Logger.log("Inserting new sentence", this.constructor.name); 
       updated = await this.insertNewSentence(createTtDto);
     }
 
@@ -50,9 +50,9 @@ export class TtsService {
       Engine: voiceType,
     });
 
-    Logger.log("Sending request to Polly: " + sentence, 'TTS'); 
+    Logger.log("Sending request to Polly: " + sentence, this.constructor.name); 
     const { AudioStream } = await polly.send(synthesizeSpeechCommand);
-    Logger.log("Returning audio stream", 'TTS'); 
+    Logger.log("Returning audio stream", this.constructor.name); 
 
     return new StreamableFile(AudioStream as Readable);
   }

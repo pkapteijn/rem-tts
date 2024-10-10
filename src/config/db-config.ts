@@ -1,6 +1,6 @@
 export class DbConfig {
   dbtype: any = 'postgres';
-  host: string = process.env.POSTGRES_HOST || 'localhost';
+  host: string = (process.env.NODE_ENV == 'prod') ? process.env.POSTGRES_HOST :  'localhost';
   port: number = parseInt(process.env.POSTGRES_PORT) || 5432;
   database: string = process.env.POSTGRES_DB || 'postgres';
   user: string = process.env.POSTGRES_USER || 'postgres';
