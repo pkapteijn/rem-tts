@@ -35,6 +35,7 @@ export class SentencesService {
     const queryResult = await this.SentencesRepository.createQueryBuilder(
       'sentences',
     )
+      .select(['sentences.id', 'sentences.sentence', 'sentences.language' ])
       .orderBy('sentences.times_used', 'DESC')
       .getMany();
 
@@ -47,7 +48,8 @@ export class SentencesService {
     const queryResult = await this.SentencesRepository.createQueryBuilder(
       'sentences',
     )
-      .where('sentences.id = :id', { id: id })
+    .select(['sentences.id', 'sentences.sentence', 'sentences.language' ])
+    .where('sentences.id = :id', { id: id })
       .getOneOrFail();
 
     return queryResult;

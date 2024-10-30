@@ -18,4 +18,10 @@ export class Sentences {
 
   @Column()
   last_used: Date;
+ 
+  @Column({type: "bytea", nullable: true})
+  audio: Buffer; 
+  
+  @Column({type: 'text', nullable: true})
+  audio_format: string;
 }

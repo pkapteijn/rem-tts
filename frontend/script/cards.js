@@ -8,12 +8,10 @@ function addCardRows(nrCards, nrCardsPerRow, id) {
     let draft = document.getElementById(id); 
 
     for(let i=1; i<=nrRows; i++) {
-        console.log("rowId="+i);
         let newRow = document.createElement('div'); 
         newRow.setAttribute("class", "row p-2"); 
         newRow.setAttribute('id', rowIndexPrefix + i.toString());  
         draft.appendChild(newRow); 
-        console.log(draft, newRow); 
     }
 }
 
@@ -22,7 +20,6 @@ function removeCardRows(nrCards, nrCardsPerRow, id) {
     let container = document.getElementById(id); 
 
     for(let i=1; i<=nrRows; i++) {
-        console.log("rowId="+i);
         let row = document.getElementById(rowIndexPrefix + i.toString()); 
         if(row) {
             container.removeChild(row); 
@@ -92,7 +89,6 @@ function addCardsToRows(elements, nrCardsPerRow, rowIdPrefix) {
 
 function addEventListeners(length) {
     for (let i=0; i < length; i++) {
-    console.log("adding el for i: " + i)    
     // set eventlisteners for click actions
     document.getElementById(cardIndexPrefix + i.toString()).addEventListener('click', speak); 
     document.getElementById(delIndexPrefix + i.toString()).addEventListener('click', deleteSentence); 
