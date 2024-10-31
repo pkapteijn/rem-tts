@@ -1,8 +1,10 @@
+const baseURL = "http://localhost:3000"; 
+
 function saveSentence() {
     const text = document.getElementById('inputText').value;
     const lang = document.querySelector('#lang-select1').value.toLowerCase(); // || "it";
     console.log("lang:  " + lang)  
-    fetch('http://localhost:3000/sentences', {
+    fetch(baseURL + '/sentences', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -22,7 +24,7 @@ function saveSentence() {
 document.addEventListener('DOMContentLoaded', getMostUsedSentences());
 
 function getMostUsedSentences() {
-    fetch('http://localhost:3000/sentences')
+    fetch(baseURL + '/sentences')
         .then(response => response.json())
         .then(data => {
             removeCardRows(data.length, 6, 'card-container-most-used'); 
@@ -43,7 +45,7 @@ function speak(event) {
     const player = document.getElementById('player'); 
     const input = document.getElementById('inputText'); 
 
-    const url = 'http://localhost:3000/sentences/tts' +
+    const url = baseURL + '/sentences/tts' +
         '?sentence=' +
         encodeURIComponent(text) +
         '&language=' +
@@ -61,7 +63,7 @@ function deleteSentence(event) {
     console.log("item", event.currentTarget.phrase)
     event.stopPropagation(); 
     const itemId = event.currentTarget.phrase.id; 
-    fetch('http://localhost:3000/sentences/' + itemId, {
+    fetch(baseURL + '/sentences/' + itemId, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'

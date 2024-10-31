@@ -12,6 +12,15 @@ const testSentence1: CreateSentencesDto = {
   language: "en",
 }
 
+const testSentence2: Sentences = {
+  id: 1,
+  sentence: "Test1",
+  language: "en",
+  last_used:  new Date(1727456405505),
+  times_used: 1, 
+  audio:  null, 
+  audio_format: null
+}
 
 
 describe('TtsService', () => {
@@ -35,7 +44,7 @@ describe('TtsService', () => {
   });
 
   it('should update an existing sentence when sentence to speak does already exists', async ()=> {
-    const existsSpy = jest.spyOn(service, 'existsSentence' ).mockResolvedValue(true);
+    const existsSpy = jest.spyOn(service, 'existsSentence' ).mockResolvedValue(testSentence2);
     const updateSpy = jest.spyOn(service, 'updateTimesUsed' ).mockResolvedValue(true);
 
     const rcvReadableStream = await service.speak(testSentence1.sentence, testSentence1.language as LanguageType); 
