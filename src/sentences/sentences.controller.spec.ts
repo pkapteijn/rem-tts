@@ -16,7 +16,9 @@ const testSentence2: Sentences = {
   sentence: "Test1", 
   language: "en", 
   last_used: new Date(), 
-  times_used: 1
+  times_used: 1, 
+  audio:  null, 
+  audio_format: null
 }
 
 const testSentence3: UpdateSentencesDto = {

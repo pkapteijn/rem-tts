@@ -13,7 +13,9 @@ const testSentence1: Sentences = {
   sentence: "Test1",
   language: "en",
   last_used:  new Date(1727456405505),
-  times_used: 1
+  times_used: 1, 
+  audio:  null, 
+  audio_format: null
 }
 
 const updateSentence2: UpdateSentencesDto = {
@@ -25,7 +27,9 @@ const testSentence2: Sentences = {
   sentence: "Test2",
   language: "nl",
   last_used: new Date(1727456406505),
-  times_used: 1
+  times_used: 1, 
+  audio:  null, 
+  audio_format: null
 }
 
 const sentencesArray = [
@@ -58,11 +62,13 @@ describe('SentencesService', () => {
   describe('findAll', () => {
     it('should return an array of sentences', async () => {
       const repoSpy = jest.spyOn(repo.createQueryBuilder(), 'getMany' ).mockResolvedValue(sentencesArray);
+      const selectSpy = jest.spyOn(repo.createQueryBuilder(), 'select' ).mockReturnThis();
       const orderSpy = jest.spyOn(repo.createQueryBuilder(), 'orderBy' ).mockReturnThis();
 
       const sents = await service.findAll();
       expect(sents).toEqual(sentencesArray);
       expect(orderSpy).toHaveBeenCalledWith('sentences.times_used', 'DESC');
+      expect(selectSpy).toHaveBeenCalledTimes(1); 
       expect(repoSpy).toHaveBeenCalledTimes(1); 
     });
   });
@@ -70,21 +76,25 @@ describe('SentencesService', () => {
   describe('findOne', () => {
     it('should get a single sentence', async () => {
       const whereSpy = jest.spyOn(repo.createQueryBuilder(), 'where' ).mockReturnThis();
+      const selectSpy = jest.spyOn(repo.createQueryBuilder(), 'select' ).mockReturnThis();
       const getOneSpy = jest.spyOn(repo.createQueryBuilder(), 'getOneOrFail' ).mockResolvedValue(testSentence1);
       
       const sent = await service.findOne(1);
       expect(sent).toEqual(testSentence1);
       expect(whereSpy).toHaveBeenCalledWith("sentences.id = :id",  { id: 1 } );
+      expect(selectSpy).toHaveBeenCalledTimes(1); 
       expect(getOneSpy).toHaveBeenCalledTimes(1); 
     });
 
     it('should throw a NOT_FOUND exception', async () => {
       const whereSpy = jest.spyOn(repo.createQueryBuilder(), 'where' ).mockReturnThis();
+      const selectSpy = jest.spyOn(repo.createQueryBuilder(), 'select' ).mockReturnThis();
       const getOneSpy = jest.spyOn(repo.createQueryBuilder(), 'getOneOrFail' )
         .mockRejectedValue(new EntityNotFoundError(Sentences, { id: 666 }));
       
       await expect(service.findOne(666)).rejects.toThrow(EntityNotFoundError);
       expect(whereSpy).toHaveBeenCalledWith("sentences.id = :id",  { id: 666 } );
+      expect(selectSpy).toHaveBeenCalledTimes(1); 
       expect(getOneSpy).toHaveBeenCalledTimes(1); 
     });
   });
