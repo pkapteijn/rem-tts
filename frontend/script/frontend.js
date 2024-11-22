@@ -1,4 +1,8 @@
-const baseURL = "http://localhost:3000"; 
+let getUrl = window.location;
+let baseUrl = getUrl.protocol + "//" + getUrl.host;
+let port =  getUrl.host === 'localhost'? 3000: 80
+
+const baseURL = baseUrl + ':' + port
 
 function saveSentence() {
     const text = document.getElementById('inputText').value;
